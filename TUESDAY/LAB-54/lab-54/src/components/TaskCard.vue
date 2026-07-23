@@ -1,33 +1,25 @@
 <script setup>
-// Accept props from the parent
+import { useTaskStore } from '../stores/taskStore'
+
 const props = defineProps({
-  id: {
-    type: Number,
+  task: {
+    type: Object,
     required: true
-  },
-  title: {
-    type: String,
-    required: true
-  },
-  isComplete: {
-    type: Boolean,
-    default: false
   }
 })
 
-// Declare the custom event this component can emit
-const emit = defineEmits(['completeTask'])
+const store = useTaskStore()
 
 function markComplete() {
-  emit('completeTask', props.id)
+  store.toggleComplete(props.task.id)
 }
 </script>
 
 <template>
-  <div class="task-card" :class="{ completed: isComplete }">
-    <span class="title">{{ title }}</span>
+  <div class="task-card" :class="{ completed: task.isComplete }">
+    <span class="title">{{ task.title }}</span>
 
-    <button v-if="!isComplete" @click="markComplete">
+    <button v-if="!task.isComplete" @click="markComplete">
       Mark Complete
     </button>
     <span v-else class="done-label">✓ Done</span>

@@ -1,36 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import { useTaskStore } from '../stores/taskStore'
 import TaskCard from './TaskCard.vue'
 
-// Reactive array of tasks
-const tasks = ref([
-  { id: 1, title: 'Learn Vue', isComplete: false },
-  { id: 2, title: 'Build a component', isComplete: false },
-  { id: 3, title: 'Master props and emits', isComplete: false }
-])
-
-// Called when a TaskCard emits 'complete-task'
-function handleComplete(taskId) {
-  const task = tasks.value.find((t) => t.id === taskId)
-  if (task) {
-    task.isComplete = true
-  }
-}
+const store = useTaskStore()
 </script>
 
 <template>
   <main class="dashboard">
     <h1>My Tasks</h1>
+    <p class="completed-count">
+      Completed: <strong>{{ store.completedCount }}</strong> / {{ store.tasks.length }}
+    </p>
 
     <div class="task-list">
-      <TaskCard
-        v-for="task in tasks"
-        :key="task.id"
-        :id="task.id"
-        :title="task.title"
-        :isComplete="task.isComplete"
-        @complete-task="handleComplete"
-      />
+      <TaskCard v-for="task in store.tasks" :key="task.id" :task="task" />
     </div>
   </main>
 </template>
@@ -41,6 +24,11 @@ function handleComplete(taskId) {
   margin: 2rem auto;
   padding: 1rem;
   font-family: sans-serif;
+}
+
+.completed-count {
+  color: #555;
+  margin-bottom: 1rem;
 }
 
 .task-list {
